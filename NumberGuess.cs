@@ -4,8 +4,17 @@ class NumberGuess {
   private int number;
 
   public void setNumber() {
-    Console.WriteLine("Enter Your Number: ");
-    number = int.Parse(Console.ReadLine());
+    Console.WriteLine("Pick a number between 1 and 100.");
+
+    while(!int.TryParse(Console.ReadLine(), out number)) {
+      Console.WriteLine("Invalid number. Please enter a new number!");
+    }
+  }
+
+  public void setRandomNumber() {
+    Random rand = new Random();
+    Console.WriteLine("Picking number...");
+    number = rand.Next(1, 100);
   }
 
   public int getNumber() {
@@ -26,22 +35,35 @@ public class Game {
   const string INVALID_RESPONSE = "Invalid response.";
 
   public static void Main() {
-    new Game().playGame();
+    new Game().showMenu();
   }
 
-  public void playGame() {
+  public void showMenu() {
+    Console.WriteLine("Enter An Option");
+    Console.WriteLine("(1) User Guesses (2) Computer Guesses");
+    int choice = int.Parse(Console.ReadLine());
+
+    if(choice == 1) {
+      playUserGuess();
+    } else if(choice == 2) {
+      playComputerGuess();
+    } else {
+      Console.WriteLine("Not a valid choice!");
+      showMenu();
+    }
+  }
+  
+  /*--------------------------- 
+  COMPUTER GUESS FUNCTIONALITY 
+  ---------------------------*/
+
+  public void playComputerGuess() {
     guessNumber.setNumber();
     bool gameOver = false;
     const string CORRECT = "correct";
-    const string LOWER = "lower";
     const string HIGHER = "higher";
     int guess = 50;
     int guessCounter = 0;
-
-    while(!guessNumber.isValidNumber()) {
-      Console.WriteLine("Invalid number. Please enter a new number!");
-      guessNumber.setNumber();
-    }
 
     while(!gameOver) {
       string response = makeGuess(guess);
@@ -134,6 +156,64 @@ public class Game {
     }
 
     return isValid;
+  }
+
+  /*--------------------------- 
+  USER GUESS FUNCTIONALITY 
+  ---------------------------*/
+
+  public void playUserGuess() {
+    guessNumber.setRandomNumber();
+    int guessCounter = 0;
+    bool gameOver = false;
+    const string CORRECT = "correct";
+    const string LOWER = "lower";
+
+    while(!gameOver) {
+      int userGuess = enterUserGuess();
+      string response = checkGuess(userGuess);
+      guessCounter++;
+
+      if(response == CORRECT) {
+        gameOver = true;
+      } else if(response == LOWER) {
+        Console.WriteLine("Lower");
+      } else {
+        Console.WriteLine("Higher");
+      }
+    }
+
+    Console.WriteLine("You win! The number was " + guessNumber.getNumber() + ".");
+    Console.WriteLine("It took you " + guessCounter + " turns to guess the number.");
+  }
+
+  public int enterUserGuess() {
+    int guess;
+    Console.WriteLine("Enter Number: ");
+
+    while(!int.TryParse(Console.ReadLine(), out guess)) {
+      Console.WriteLine("Invalid number. Please enter a new number!");
+    }
+
+    return guess;
+  }
+
+  public string checkGuess(int guess) {
+    int correctGuess = guessNumber.getNumber();
+    string response = "";
+    
+    if(guess > correctGuess) {
+      
+      response = "lower";
+    } else if(guess < correctGuess) {
+
+      response = "higher";
+    } else if(guess == correctGuess) {
+
+      response = "correct";
+    }
+
+    return response;
   }
 
 }
