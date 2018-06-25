@@ -59,6 +59,11 @@ public class Game {
 
   public void playComputerGuess() {
     guessNumber.setNumber();
+    if(guessNumber.getNumber() > 100 || guessNumber.getNumber() < 1) 
+    {
+    Console.WriteLine("Invalid number!");
+    guessNumber.setNumber();
+    }
     bool gameOver = false;
     const string CORRECT = "correct";
     const string HIGHER = "higher";
@@ -125,6 +130,7 @@ public class Game {
 
     Console.WriteLine("Your number is " + guess + "!" );
     Console.WriteLine("It took me " + guessCounter + " turns to guess your number.");
+    showMenu();
   }
 
   public string makeGuess(int guess) {
@@ -185,6 +191,7 @@ public class Game {
 
     Console.WriteLine("You win! The number was " + guessNumber.getNumber() + ".");
     Console.WriteLine("It took you " + guessCounter + " turns to guess the number.");
+    showMenu();
   }
 
   public int enterUserGuess() {
